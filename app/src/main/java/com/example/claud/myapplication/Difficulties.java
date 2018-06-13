@@ -13,14 +13,16 @@ public class Difficulties extends AppCompatActivity {
         setContentView(R.layout.difficulties);
     }
 
-    public void buttonGoTutorial(View v){
-        Intent intent = new Intent(this, Tutorial.class);
-        startActivity(intent);
-    }
     public void buttonGoBeginner(View v){
         Intent intent = new Intent(this, Beginner.class);
         startActivity(intent);
     }
+
+    /*public void buttonGoTutorial(View v){
+        Intent intent = new Intent(this, Tutorial.class);
+        startActivity(intent);
+    }
+
 
     public void buttonGoAdvanced(View v){
         Intent intent = new Intent(this, Advanced.class);
@@ -30,5 +32,5 @@ public class Difficulties extends AppCompatActivity {
     public void buttonGoExpert(View v){
         Intent intent = new Intent(this, Expert.class);
         startActivity(intent);
-    }
+    }*/
 }

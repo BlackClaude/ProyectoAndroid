@@ -15,6 +15,6 @@
     <string name="start">Iniciar</string>
     <string name="capini">Capital Inicial</string>
     <string name="timesim">Cantidad de Tiempo</string>
-    <string name="dias">14 dias</string>
-    <string name="clp">100.000,00 CLP</string>
+    <string name="dias">14</string>
+    <string name="clp">100000</string>
 </resources>

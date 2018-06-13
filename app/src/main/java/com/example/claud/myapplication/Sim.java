@@ -1,26 +1,28 @@
 package com.example.claud.myapplication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.ArrayList;
 
 public class Sim extends AppCompatActivity {
 
     private LineChart mLChart;
+    ArrayList<Float> varCap = new ArrayList<>();
+    ArrayList<Integer> varTim = new ArrayList<>();
+
+
+    public int flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,35 +31,70 @@ public class Sim extends AppCompatActivity {
 
         mLChart = findViewById(R.id.Lchart1);
 
-        setData(7);
-    }
-    public void verNoticias(View v){
-        Intent intent = new Intent(this, Noticias.class);
-        startActivity(intent);
-    }
-
-    private void setData(int count){
-        ArrayList<Entry> yVals1 = new ArrayList<>();
-        float bitcoin = (float)(Math.random()*(5000-(10001))+10000);
-        yVals1.add(new Entry(0, bitcoin));
-        for (int i=1; i<=count; i++){
-            if(i == 1 || i == 5){
-                bitcoin = (float) (bitcoin + (bitcoin * 0.5)); //dar valores al "Y"
-                yVals1.add(new Entry(i, bitcoin));             //agregar valores x = x+1; y = math.random*range
-            }else if(i == 2 || i == 6){
-                bitcoin = (float) (bitcoin - (bitcoin * 0.31416));
-                yVals1.add(new Entry(i, bitcoin));
-            } else if (i == 3 || i == 7) {
-                bitcoin = (float) (bitcoin + (bitcoin * 0.18));
-                yVals1.add(new Entry(i, bitcoin));
-            } else if (i == 4){
-                bitcoin = (float) (bitcoin - (bitcoin * 0.25));
-                yVals1.add(new Entry(i, bitcoin));
-            }
+        Bundle params = this.getIntent().getExtras();
+        if(params != null){
+            int data = Integer.parseInt(params.getString("data"));
+            int time = Integer.parseInt(params.getString("time"));
+            setData(data, time);
         }
 
 
 
+
+
+    }
+
+
+
+
+    public void verNoticias(View v){
+        Intent intent = new Intent(this, Noticias.class);
+        intent.putExtra("varlorbc", flag);
+        startActivity(intent);
+
+
+    }
+
+    public  void setData(int cap, int time){
+        ArrayList<Entry> yVals1 = new ArrayList<>();
+        SharedPreferences.Editor spe = getPreferences(MODE_PRIVATE).edit();
+        float bitcoin = cap;
+        yVals1.add(new Entry(0, bitcoin));
+        for (int i=1; i<=time; i++){
+            if(i % 2 == 0 && i % 5 == 0){
+                bitcoin = (float) (bitcoin + (bitcoin * 0.05)); //dar valores al "Y"
+                yVals1.add(new Entry(i, bitcoin));             //agregar valores x = x+1; y = math.random*range
+                flag = 1;
+            }else if(i % 2 == 0 && i % 3 == 0){
+                bitcoin = (float) (bitcoin - (bitcoin * 0.031416));
+                yVals1.add(new Entry(i, bitcoin));
+            } else if (i % 7 == 0) {
+                bitcoin = (float) (bitcoin + (bitcoin * 0.18));
+                yVals1.add(new Entry(i, bitcoin));
+            } else if (i % 3 == 0){
+                bitcoin = (float) (bitcoin + (bitcoin * 0.75));
+                yVals1.add(new Entry(i, bitcoin));
+            } else if (i % 5 == 0){
+                bitcoin = (float) (bitcoin + bitcoin/2.19);
+                yVals1.add(new Entry(i, bitcoin));
+            } else if (i % 2 == 0){
+                bitcoin = (float) (bitcoin - bitcoin /2.115);
+                yVals1.add(new Entry(i, bitcoin));
+            } else if (i % 1 == 0){
+                bitcoin = (float) (bitcoin +  bitcoin * 0.11 );
+                yVals1.add(new Entry(i, bitcoin));
+            }
+            varCap.add(bitcoin);
+            varTim.add(time);
+
+            spe.putInt("varCap", (int)bitcoin);
+            spe.putInt("varTim", time);
+            spe.commit();
+        }
+
+
+
+        Toast.makeText(this,"Se guardo Correctamente", Toast.LENGTH_SHORT).show();
         LineDataSet set1;
 
         set1 = new LineDataSet(yVals1, "Bitcoin");
@@ -70,5 +107,7 @@ public class Sim extends AppCompatActivity {
         LineData data = new LineData(set1);
 
         mLChart.setData(data);
+
+
     }
 }
